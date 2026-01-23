@@ -1,1 +1,1 @@
-postdeploy: npm run migrate deploy
+postdeploy: npm run migrate:scalingo
