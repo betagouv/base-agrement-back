@@ -4,8 +4,6 @@ on: [push]
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
-    env:
-      CI: true
     steps:
       - name: Check out repository code
         uses: actions/checkout@v5
