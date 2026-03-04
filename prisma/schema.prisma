@@ -11,6 +11,7 @@ generator client {
   // generatedFileExtension = "js"
 }
 
+// décommenter pour générer un schema avec npx prisma generate
 // generator erd {
 //   provider = "prisma-erd-generator"
 // }
@@ -85,6 +86,7 @@ model adresse_accueil {
 
   numero_voie                                 String                        @db.VarChar(10)
   complement_voie                             String?
+  nom_voie                                    String
   code_postal                                 String                        @db.Char(5)
   code_insee_commune                          String
 
