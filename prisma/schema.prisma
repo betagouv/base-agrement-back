@@ -11,14 +11,12 @@ generator client {
   // generatedFileExtension = "js"
 }
 
-datasource db {
-  provider = "postgresql"
+generator erd {
+  provider = "prisma-erd-generator"
 }
 
-model hello_world {
-  id        String   @id
-  createdAt DateTime @default(now())
-  name      String?
+datasource db {
+  provider = "postgresql"
 }
 
 model personne {
@@ -46,15 +44,15 @@ model agrement_assistant_maternel {
 
   adresses_accueil                            adresse_accueil[]
 
-  agrement_identifiant_departement            String
-  agrement_date_premiere_delivrance           DateTime            @db.Date
-  agrement_date_renouvellement                DateTime?           @db.Date
-  agrement_date_suspension_temporaire         DateTime?           @db.Date
-  agrement_date_fin_suspension_temporaire     DateTime?           @db.Date
-  agrement_date_cessation_temporaire          DateTime?           @db.Date
-  agrement_date_fin_cessation_temporaire      DateTime?           @db.Date
-  agrement_date_retrait                       DateTime?           @db.Date
-  agrement_date_fin_definitive                DateTime?           @db.Date
+  identifiant_departement            String
+  date_premiere_delivrance           DateTime            @db.Date
+  date_renouvellement                DateTime?           @db.Date
+  date_suspension_temporaire         DateTime?           @db.Date
+  date_fin_suspension_temporaire     DateTime?           @db.Date
+  date_cessation_temporaire          DateTime?           @db.Date
+  date_fin_cessation_temporaire      DateTime?           @db.Date
+  date_retrait                       DateTime?           @db.Date
+  date_fin_definitive                DateTime?           @db.Date
 
   createdAt                                   DateTime            @default(now())
   updatedAt                                   DateTime            @updatedAt
@@ -67,16 +65,15 @@ model agrement_assistant_familial {
 
   adresses_accueil                            adresse_accueil[]
 
-  agrement_identifiant_departement            String
-  agrement_date_premiere_delivrance           DateTime            @db.Date
-  agrement_date_renouvellement                DateTime?           @db.Date
-  agrement_date_suspension_temporaire         DateTime?           @db.Date
-  agrement_date_fin_suspension_temporaire     DateTime?           @db.Date
-  agrement_date_cessation_temporaire          DateTime?           @db.Date
-  agrement_date_fin_cessation_temporaire      DateTime?           @db.Date
-  agrement_date_retrait                       DateTime?           @db.Date
-  agrement_date_fin_retrait                   DateTime?           @db.Date
-  agrement_date_fin_definitive                DateTime?           @db.Date
+  identifiant_departement            String
+  date_premiere_delivrance           DateTime            @db.Date
+  date_renouvellement                DateTime?           @db.Date
+  date_suspension_temporaire         DateTime?           @db.Date
+  date_fin_suspension_temporaire     DateTime?           @db.Date
+  date_cessation_temporaire          DateTime?           @db.Date
+  date_fin_cessation_temporaire      DateTime?           @db.Date
+  date_retrait                       DateTime?           @db.Date
+  date_fin_definitive                DateTime?           @db.Date
   diplome_date_obtention                      DateTime            @db.Date
 
   createdAt                                   DateTime            @default(now())

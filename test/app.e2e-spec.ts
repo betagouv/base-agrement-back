@@ -29,14 +29,14 @@ describe('AppController (e2e)', () => {
   });
 
   it("Si la table est vide, renvoie 'tableau vide'", async () => {
-    await prisma.hello_world.deleteMany();
+    await prisma.personne.deleteMany();
     return request(app.getHttpServer())
       .get('/')
       .expect("tableau vide");
   });
 
   it("Si la table contient une ligne, renvoie l'id de la première ligne", async () => {
-    await prisma.hello_world.create({
+    await prisma.personne.create({
       data: {
         id: "123",
         name: "coucou",
