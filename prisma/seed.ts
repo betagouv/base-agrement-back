@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../generated/prisma/client.ts";
+import { PrismaClient } from "../generated/prisma/client";
 const connectionString = `${process.env.DATABASE_URL}`;
 const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
@@ -30,6 +30,7 @@ async function main() {
       lieu_naissance_pays: 'BF',
       agrement_assistant_maternel: {
         create: {
+          numero_departemental_agrement: 'AM-7500001',
           identifiant_departement: '75',
           date_premiere_delivrance: new Date('2020-01-01'),
           adresses_accueil: {
@@ -57,18 +58,17 @@ async function main() {
       lieu_naissance_pays: 'FR',
       agrement_assistant_familial: {
         create: {
+          numero_departemental_agrement: 'AF-3300001',
           identifiant_departement: '33',
           date_premiere_delivrance: new Date('2021-02-03'),
           diplome_date_obtention: new Date('2021-01-02'),
-          adresses_accueil: {
-            create: [
-              {
-                numero_voie: '2',
-                nom_voie: 'Rue du Temple',
-                code_postal: '33000',
-                code_insee_commune: '33063',
-              },
-            ],
+          adresse_accueil: {
+            create: {
+              numero_voie: '2',
+              nom_voie: 'Rue du Temple',
+              code_postal: '33000',
+              code_insee_commune: '33063',
+            },
           },
         },
       },
@@ -85,6 +85,7 @@ async function main() {
       lieu_naissance_pays: 'FR',
       agrement_assistant_maternel: {
         create: {
+          numero_departemental_agrement: 'AM-9300001',
           identifiant_departement: '93',
           date_premiere_delivrance: new Date('2023-02-01'),
           adresses_accueil: {
@@ -118,6 +119,7 @@ async function main() {
       lieu_naissance_pays: 'FR',
       agrement_assistant_maternel: {
         create: {
+          numero_departemental_agrement: 'AM-1300001',
           identifiant_departement: '13',
           date_premiere_delivrance: new Date('2010-11-12'),
           adresses_accueil: {
@@ -134,18 +136,17 @@ async function main() {
       },
       agrement_assistant_familial: {
         create: {
+          numero_departemental_agrement: 'AF-1300001',
           identifiant_departement: '13',
           date_premiere_delivrance: new Date('2020-11-12'),
           diplome_date_obtention: new Date('2020-11-12'),
-          adresses_accueil: {
-            create: [
-              {
-                numero_voie: '101',
-                nom_voie: 'Avenue Jean Lolive',
-                code_postal: '93500',
-                code_insee_commune: '93055',
-              },
-            ],
+          adresse_accueil: {
+            create: {
+              numero_voie: '101',
+              nom_voie: 'Avenue Jean Lolive',
+              code_postal: '93500',
+              code_insee_commune: '93055',
+            },
           },
         },
       },
