@@ -36,6 +36,7 @@ model personne {
 
   agrement_assistant_maternel  agrement_assistant_maternel?
   agrement_assistant_familial  agrement_assistant_familial?
+  adresse_residence            adresse_residence?
 }
 
 model agrement_assistant_maternel {
@@ -43,8 +44,8 @@ model agrement_assistant_maternel {
   personne_id                                 String              @unique
   personne                                    personne            @relation(fields: [personne_id], references: [id], onDelete: Cascade)
 
-  adresses_accueil                            adresse_accueil[]
-
+  adresses_accueil                   adresse_accueil[]
+  numero_departemental_agrement      String
   identifiant_departement            String
   date_premiere_delivrance           DateTime            @db.Date
   date_renouvellement                DateTime?           @db.Date
@@ -64,8 +65,10 @@ model agrement_assistant_familial {
   personne_id                                 String              @unique
   personne                                    personne            @relation(fields: [personne_id], references: [id], onDelete: Cascade)
 
-  adresses_accueil                            adresse_accueil[]
+  adresse_accueil_id                          String              @unique
+  adresse_accueil                             adresse_accueil     @relation(fields: [adresse_accueil_id], references: [id], onDelete: Cascade)
 
+  numero_departemental_agrement      String
   identifiant_departement            String
   date_premiere_delivrance           DateTime            @db.Date
   date_renouvellement                DateTime?           @db.Date
@@ -93,14 +96,27 @@ model adresse_accueil {
   agrement_assistant_maternel_id              String?
   agrement_assistant_maternel                 agrement_assistant_maternel?  @relation(fields: [agrement_assistant_maternel_id], references: [id], onDelete: Cascade)
 
-  agrement_assistant_familial_id              String?
-  agrement_assistant_familial                 agrement_assistant_familial?  @relation(fields: [agrement_assistant_familial_id], references: [id], onDelete: Cascade)
+  agrement_assistant_familial                 agrement_assistant_familial?
 
   createdAt                                   DateTime                      @default(now())
   updatedAt                                   DateTime                      @updatedAt
 }
 
+model adresse_residence {
+  id                                          String                        @id @default(cuid())
 
+  personne_id                                 String                        @unique
+  personne                                    personne                      @relation(fields: [personne_id], references: [id], onDelete: Cascade)
+
+  numero_voie                                 String                        @db.VarChar(10)
+  complement_voie                             String?
+  nom_voie                                    String
+  code_postal                                 String                        @db.Char(5)
+  code_insee_commune                          String
+
+  createdAt                                   DateTime                      @default(now())
+  updatedAt                                   DateTime                      @updatedAt
+}
 
 
 
