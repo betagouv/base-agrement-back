@@ -5,8 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
   moduleFormat = "cjs"
   // generatedFileExtension = "js"
 }
@@ -22,102 +22,70 @@ datasource db {
 }
 
 model personne {
-  id                           String                         @id @default(cuid())
-  civilite                     String
-  nom_naissance                String
-  nom_usage                    String?
-  prenom_1                     String
-  prenom_2                     String?
-  prenom_3                     String?
-  date_naissance               DateTime                       @db.Date
-  lieu_naissance_pays          String
-  lieu_naissance_commune       String?
-  createdAt                    DateTime                       @default(now())
-  updatedAt                    DateTime                       @updatedAt
+  id                     String   @id @default(cuid())
+  civilite               String
+  nom_naissance          String
+  nom_usage              String?
+  prenom_1               String
+  prenom_2               String?
+  prenom_3               String?
+  date_naissance         DateTime @db.Date
+  lieu_naissance_pays    String
+  lieu_naissance_commune String?
 
-  agrement_assistant_maternel  agrement_assistant_maternel?
-  agrement_assistant_familial  agrement_assistant_familial?
-  adresse_residence            adresse_residence?
+  residence_numero_voie        String? @db.VarChar(10)
+  residence_complement_voie    String?
+  residence_nom_voie           String?
+  residence_code_postal        String? @db.Char(5)
+  residence_code_insee_commune String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  agrement_assistant_maternel agrement_assistant_maternel?
+  agrement_assistant_familial agrement_assistant_familial?
 }
 
 model agrement_assistant_maternel {
-  id                                          String              @id @default(cuid())
-  personne_id                                 String              @unique
-  personne                                    personne            @relation(fields: [personne_id], references: [id], onDelete: Cascade)
+  id          String   @id @default(cuid())
+  personne_id String   @unique
+  personne    personne @relation(fields: [personne_id], references: [id], onDelete: Cascade)
 
-  adresses_accueil                   adresse_accueil[]
-  numero_departemental_agrement      String
-  identifiant_departement            String
-  date_premiere_delivrance           DateTime            @db.Date
-  date_renouvellement                DateTime?           @db.Date
-  date_suspension_temporaire         DateTime?           @db.Date
-  date_fin_suspension_temporaire     DateTime?           @db.Date
-  date_cessation_temporaire          DateTime?           @db.Date
-  date_fin_cessation_temporaire      DateTime?           @db.Date
-  date_retrait                       DateTime?           @db.Date
-  date_fin_definitive                DateTime?           @db.Date
+  adresses_accueil               Json[]
+  numero_departemental_agrement  String
+  identifiant_departement        String
+  date_premiere_delivrance       DateTime  @db.Date
+  date_renouvellement            DateTime? @db.Date
+  date_suspension_temporaire     DateTime? @db.Date
+  date_fin_suspension_temporaire DateTime? @db.Date
+  date_cessation_temporaire      DateTime? @db.Date
+  date_fin_cessation_temporaire  DateTime? @db.Date
+  date_retrait                   DateTime? @db.Date
+  date_fin_definitive            DateTime? @db.Date
 
-  createdAt                                   DateTime            @default(now())
-  updatedAt                                   DateTime            @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model agrement_assistant_familial {
-  id                                          String              @id @default(cuid())
-  personne_id                                 String              @unique
-  personne                                    personne            @relation(fields: [personne_id], references: [id], onDelete: Cascade)
+  id          String   @id @default(cuid())
+  personne_id String   @unique
+  personne    personne @relation(fields: [personne_id], references: [id], onDelete: Cascade)
 
-  adresse_accueil_id                          String              @unique
-  adresse_accueil                             adresse_accueil     @relation(fields: [adresse_accueil_id], references: [id], onDelete: Cascade)
+  adresses_accueil Json[]
 
-  numero_departemental_agrement      String
-  identifiant_departement            String
-  date_premiere_delivrance           DateTime            @db.Date
-  date_renouvellement                DateTime?           @db.Date
-  date_suspension_temporaire         DateTime?           @db.Date
-  date_fin_suspension_temporaire     DateTime?           @db.Date
-  date_cessation_temporaire          DateTime?           @db.Date
-  date_fin_cessation_temporaire      DateTime?           @db.Date
-  date_retrait                       DateTime?           @db.Date
-  date_fin_definitive                DateTime?           @db.Date
-  diplome_date_obtention                      DateTime            @db.Date
+  numero_departemental_agrement  String
+  identifiant_departement        String
+  date_premiere_delivrance       DateTime  @db.Date
+  date_renouvellement            DateTime? @db.Date
+  date_suspension_temporaire     DateTime? @db.Date
+  date_fin_suspension_temporaire DateTime? @db.Date
+  date_cessation_temporaire      DateTime? @db.Date
+  date_fin_cessation_temporaire  DateTime? @db.Date
+  date_retrait                   DateTime? @db.Date
+  date_fin_definitive            DateTime? @db.Date
+  diplome_date_obtention         DateTime  @db.Date
 
-  createdAt                                   DateTime            @default(now())
-  updatedAt                                   DateTime            @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
-
-model adresse_accueil {
-  id                                          String                        @id @default(cuid())
-
-  numero_voie                                 String                        @db.VarChar(10)
-  complement_voie                             String?
-  nom_voie                                    String
-  code_postal                                 String                        @db.Char(5)
-  code_insee_commune                          String
-
-  agrement_assistant_maternel_id              String?
-  agrement_assistant_maternel                 agrement_assistant_maternel?  @relation(fields: [agrement_assistant_maternel_id], references: [id], onDelete: Cascade)
-
-  agrement_assistant_familial                 agrement_assistant_familial?
-
-  createdAt                                   DateTime                      @default(now())
-  updatedAt                                   DateTime                      @updatedAt
-}
-
-model adresse_residence {
-  id                                          String                        @id @default(cuid())
-
-  personne_id                                 String                        @unique
-  personne                                    personne                      @relation(fields: [personne_id], references: [id], onDelete: Cascade)
-
-  numero_voie                                 String                        @db.VarChar(10)
-  complement_voie                             String?
-  nom_voie                                    String
-  code_postal                                 String                        @db.Char(5)
-  code_insee_commune                          String
-
-  createdAt                                   DateTime                      @default(now())
-  updatedAt                                   DateTime                      @updatedAt
-}
-
-
-

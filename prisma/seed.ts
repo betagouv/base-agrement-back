@@ -11,7 +11,6 @@ const prisma = new PrismaClient({ adapter });
 
 async function reset() {
   // Clean tables in an order that avoids FK issues
-  await prisma.adresse_accueil.deleteMany();
   await prisma.agrement_assistant_maternel.deleteMany();
   await prisma.agrement_assistant_familial.deleteMany();
   await prisma.personne.deleteMany();
@@ -28,21 +27,23 @@ async function main() {
       prenom_1: 'Fatoumata',
       date_naissance: new Date('1990-01-01'),
       lieu_naissance_pays: 'BF',
+      residence_numero_voie: '12',
+      residence_nom_voie: 'Rue de la Paix',
+      residence_code_postal: '75002',
+      residence_code_insee_commune: '75102',
       agrement_assistant_maternel: {
         create: {
           numero_departemental_agrement: 'AM-7500001',
           identifiant_departement: '75',
           date_premiere_delivrance: new Date('2020-01-01'),
-          adresses_accueil: {
-            create: [
-              {
-                numero_voie: '100',
-                nom_voie: 'Rue de Rivoli',
-                code_postal: '75001',
-                code_insee_commune: '75101',
-              },
-            ],
-          },
+          adresses_accueil: [
+            {
+              numero_voie: '100',
+              nom_voie: 'Rue de Rivoli',
+              code_postal: '75001',
+              code_insee_commune: '75101',
+            },
+          ],
         },
       },
     },
@@ -62,14 +63,14 @@ async function main() {
           identifiant_departement: '33',
           date_premiere_delivrance: new Date('2021-02-03'),
           diplome_date_obtention: new Date('2021-01-02'),
-          adresse_accueil: {
-            create: {
+          adresses_accueil: [
+            {
               numero_voie: '2',
               nom_voie: 'Rue du Temple',
               code_postal: '33000',
               code_insee_commune: '33063',
             },
-          },
+          ],
         },
       },
     },
@@ -88,22 +89,20 @@ async function main() {
           numero_departemental_agrement: 'AM-9300001',
           identifiant_departement: '93',
           date_premiere_delivrance: new Date('2023-02-01'),
-          adresses_accueil: {
-            create: [
-              {
-                numero_voie: '100',
-                nom_voie: 'Avenue Jean Lolive',
-                code_postal: '93500',
-                code_insee_commune: '93055',
-              },
-              {
-                numero_voie: '101',
-                nom_voie: 'Avenue Jean Lolive',
-                code_postal: '93500',
-                code_insee_commune: '93055',
-              },
-            ],
-          },
+          adresses_accueil: [
+            {
+              numero_voie: '100',
+              nom_voie: 'Avenue Jean Lolive',
+              code_postal: '93500',
+              code_insee_commune: '93055',
+            },
+            {
+              numero_voie: '101',
+              nom_voie: 'Avenue Jean Lolive',
+              code_postal: '93500',
+              code_insee_commune: '93055',
+            },
+          ],
         },
       },
     },
@@ -122,16 +121,14 @@ async function main() {
           numero_departemental_agrement: 'AM-1300001',
           identifiant_departement: '13',
           date_premiere_delivrance: new Date('2010-11-12'),
-          adresses_accueil: {
-            create: [
-              {
-                numero_voie: '101',
-                nom_voie: 'Avenue Jean Lolive',
-                code_postal: '93500',
-                code_insee_commune: '93055',
-              },
-            ],
-          },
+          adresses_accueil: [
+            {
+              numero_voie: '101',
+              nom_voie: 'Avenue Jean Lolive',
+              code_postal: '93500',
+              code_insee_commune: '93055',
+            },
+          ],
         },
       },
       agrement_assistant_familial: {
@@ -140,14 +137,14 @@ async function main() {
           identifiant_departement: '13',
           date_premiere_delivrance: new Date('2020-11-12'),
           diplome_date_obtention: new Date('2020-11-12'),
-          adresse_accueil: {
-            create: {
+          adresses_accueil: [
+            {
               numero_voie: '101',
               nom_voie: 'Avenue Jean Lolive',
               code_postal: '93500',
               code_insee_commune: '93055',
             },
-          },
+          ],
         },
       },
     },
