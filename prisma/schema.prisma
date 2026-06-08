@@ -34,7 +34,7 @@ model personne {
   lieu_naissance_commune String?
 
   residence_numero_voie        String? @db.VarChar(10)
-  residence_complement_voie    String?
+  residence_complement_voie    String
   residence_nom_voie           String?
   residence_code_postal        String? @db.Char(5)
   residence_code_insee_commune String?
