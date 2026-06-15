@@ -15,12 +15,7 @@ import { CreateAgrementDto } from './dto/create-agrement.dto';
 export class AgrementsController {
   constructor(private readonly agrementsService: AgrementsService) {}
 
-  /**
-   * Dépôt unitaire d'une personne et de ses agréments.
-   *
-   * Répond 202 Accepted : la demande est enregistrée. Le rapport des éventuelles
-   * lignes rejetées est transmis par mail (traitement asynchrone côté plateforme).
-   */
+
   @Post()
   @HttpCode(HttpStatus.ACCEPTED)
   async deposer(@Body() dto: CreateAgrementDto): Promise<{ message: string }> {

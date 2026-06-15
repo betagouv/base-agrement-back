@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateAgrementDto } from './dto/create-agrement.dto';
 import { PersonneDto } from './dto/personne.dto';
@@ -32,9 +28,7 @@ export class AgrementsService {
     }
 
     return this.prisma.$transaction(async (tx) => {
-      const personneId = personne.personneId
-        ? await this.mettreAJourPersonne(tx, personne)
-        : await this.creerPersonne(tx, personne);
+      const personneId = await this.resoudrePersonne(tx, personne);
 
       if (agrements.assistantMaternel) {
         await this.upsertAssistantMaternel(
@@ -59,40 +53,56 @@ export class AgrementsService {
   // Personne
   // --------------------------------------------------------------------------
 
-  private async creerPersonne(tx: PrismaTx, p: PersonneDto): Promise<string> {
+  /**
+   * Rapproche la personne par **identité exacte** sur les 7 champs d'identité
+   * (civilite, nom_naissance, nom_usage, prenom_1, date_naissance,
+   * lieu_naissance_pays, lieu_naissance_commune). Les champs facultatifs absents
+   * ou à `null` sont comparés à NULL.
+   *
+   * - Correspondance trouvée → la requête agit comme une **édition**.
+   * - Aucune correspondance → **création** (l'adresse de résidence est alors requise).
+   *
+   * NB : le champ `personneId` éventuellement transmis n'est volontairement pas
+   * pris en compte pour le rapprochement.
+   */
+  private async resoudrePersonne(
+    tx: PrismaTx,
+    p: PersonneDto,
+  ): Promise<string> {
     this.exigerChamps('personne', p, [
       'civilite',
       'nomNaissance',
       'prenom1',
       'dateNaissance',
       'lieuNaissancePays',
-      'adresseResidence',
     ]);
 
+    const existante = await tx.personne.findFirst({
+      where: {
+        civilite: p.civilite,
+        nom_naissance: p.nomNaissance,
+        prenom_1: p.prenom1,
+        date_naissance: new Date(p.dateNaissance as string),
+        lieu_naissance_pays: p.lieuNaissancePays,
+        nom_usage: p.nomUsage ?? null,
+        lieu_naissance_commune: p.lieuNaissanceCommune ?? null,
+      },
+    });
+
+    if (existante) {
+      await tx.personne.update({
+        where: { id: existante.id },
+        data: this.construireDonneesPersonne(p) as never,
+      });
+      return existante.id;
+    }
+
+    // Aucune personne ne correspond à cette identité → création.
+    this.exigerChamps('personne', p, ['adresseResidence']);
     const created = await tx.personne.create({
       data: this.construireDonneesPersonne(p) as never,
     });
     return created.id;
-  }
-
-  private async mettreAJourPersonne(
-    tx: PrismaTx,
-    p: PersonneDto,
-  ): Promise<string> {
-    const existante = await tx.personne.findUnique({
-      where: { id: p.personneId },
-    });
-    if (!existante) {
-      throw new NotFoundException(
-        `Aucune personne avec l'identifiant ${p.personneId}.`,
-      );
-    }
-
-    await tx.personne.update({
-      where: { id: p.personneId },
-      data: this.construireDonneesPersonne(p) as never,
-    });
-    return existante.id;
   }
 
   private construireDonneesPersonne(p: PersonneDto): AnyRecord {
@@ -246,8 +256,10 @@ export class AgrementsService {
   // --------------------------------------------------------------------------
 
   /**
-   * Ne reporte que les champs réellement présents dans la requête (clé présente).
-   * `null` est conservé (vidage d'un champ facultatif) ; une clé absente est ignorée.
+   * Ne reporte que les champs réellement transmis.
+   * - clé absente ou valeur `undefined` → ignorée (le champ n'est pas modifié) ;
+   * - valeur `null` → conservée telle quelle (vidage d'un champ facultatif) ;
+   * - sinon → valeur transformée si un `transform` est fourni (ex. date).
    */
   private collecter(
     source: AnyRecord,
@@ -260,6 +272,7 @@ export class AgrementsService {
     for (const [key, { col, transform }] of Object.entries(mapping)) {
       if (!(key in source)) continue;
       const value = source[key];
+      if (value === undefined) continue;
       out[col] = value === null || !transform ? value : transform(value);
     }
     return out;

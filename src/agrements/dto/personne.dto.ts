@@ -12,17 +12,9 @@ import { AdresseDto } from './adresse.dto';
 
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
-/**
- * Une valeur présente doit être valide ; une valeur absente est tolérée
- * (mise à jour partielle). `null` est refusé : un champ obligatoire ne se vide pas.
- */
 const PRESENT = (_: unknown, value: unknown) => value !== undefined;
 
 export class PersonneDto {
-  /**
-   * Identifiant de la personne dans la base ASSMAT/ASSFAM.
-   * Absent en création, requis pour viser une personne existante.
-   */
   @IsOptional()
   @IsString()
   @IsNotEmpty()
